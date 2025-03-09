@@ -1,0 +1,70 @@
+
+Hello everyone, thank you for being here. 
+My name is Krithikesh Ravishankar. I'm a Master's 
+student from CU Boulder, and I'm going to be talking about my research 
+with Dr. Juan Restrepo on Reservoir computing based control of chaotic systems.
+
+I'm going to start with giving a motivation for this work, some basic preliminaries on 
+chaotic systems and possible applications. Then, we'll look at what reservoir computing is,
+and how it can be applied. I'll then close out the talk with drawbacks and possible future works.
+
+Time-dependent systems are all around us, but we don't always know the laws governing them.
+We can, however, take measurements of these systems at distinct instances of time.
+
+Can we use just this data to make a black-box model to predict how the system will evolve.
+
+Can we use this knowledge to identify how to control such systems?
+
+Is there any underlying properties of these systems that we could potentially exploit?
+
+Chaotic systems perfectly check all of these boxes. They are ubiquitous in nature,
+generally deterministic, continuous and in most cases even governed by differentiable functions.
+We are not looking at stochastic data systems like stock prizes which don't satisfy these
+requirements. 
+
+As is well-known, chaotic systems are sensitive to initial conditions, but another point to remember
+is that they are also sensitive to the parameter values of the system, in some cases more
+radically in a qualitative sense than just the initial conditions.
+
+As we can see, with beta changing very slightly in this edge case, the trajectory 
+changes qualitatively, from being a periodic system to go into the chaotic regime.
+
+Formalizing what we just talked about, if we have a system of states x varying as g,
+given a time series record of x as a data matrix X, and the initial state, can we
+predict the state at a time delta-t later.
+
+Again, given a system, now undergoing disturbances, can we give it control inputs
+so that the system behaves as if there was no disturbance?
+
+The way we achieve these two tasks is using reservoir computing, specifically echo state networks.
+The way RC works can be understood by contrasting it against how the deep learning network works.
+
+In DL, there are multiple layers of neurons connected with weights, and each previous layer affects the next layer.
+In RC, there is a single layer of neurons that are sparsely inter-connected. 
+
+In DL, the output from the DL is invariant if the input is kept the same. In RC however,
+for the same input the output would be different if the reservoir is at a different state.
+This is how the RC stores complexity.
+
+In DL, training involves learning all these weights using backpropagation, but in RC, since 
+these are the only weights that need to be learned, we can actually just solve for the optimal weights
+using ridge regression. This is the essential point where the RC becomes extremely easy and efficient to trian compared to DL.
+
+Looking closely at the reservoir neurons, each neuron or node is a dynamical system that
+is governed by this equation. It's affected by the input and other neurons simultaneously.
+
+The output from the reservoir is another transformation back down to the number of dimensions of x
+
+Training the reservoir comprises of just minikizing this cost function which calculates the
+error between the prediction and the input. We add a regularization term to keep the values in Wout from blowing up.
+This can be solved by ridge regression which can be found by this matrix inverse and multiplication.
+
+In these problems, I was coy on what these outputs exactly are. The truth is they can be chosen based on the application.
+
+Given the state at the current instant, the reservoir should predict the next state in forecasting.
+
+To train the reservoir, we set the output to be offset by one column so that the state at t can predict the state at t+1
+
+During inference, the output from the reservoir is fed back into the system as the input. This closes the loop, and this whole block
+effectively behaves a dynamical system that evolves on its own.
+
